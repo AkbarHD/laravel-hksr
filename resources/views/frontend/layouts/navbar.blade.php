@@ -20,11 +20,21 @@
                     <a class="nav-link" href="{{ route('pelaporan') }}">Pelaporan Kekerasan</a>
                 </li>
             </ul>
+            @auth
             <div class="ms-2 mt-2">
                 <a href="#" class="btn btn-outline-dark rounded-pill px-3">
-                    <i class="fas fa-user me-1"></i> User
+                    <i class="fas fa-user me-1"></i> {{ Auth::user()->name }}
                 </a>
             </div>
+            @endauth
+
+            @guest
+            <div class="ms-2 mt-2">
+                <a href="{{ route('login') }}" class="btn btn-outline-dark rounded-pill px-3">
+                    <i class="fas fa-user me-1"></i> Login
+                </a>
+            </div>
+            @endguest
         </div>
     </div>
 </nav>

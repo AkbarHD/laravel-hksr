@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ModulController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,7 +27,23 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontController::class, 'index'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin');
-     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::prefix('category')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+        Route::post('/store', [CategoryController::class, 'store'])->name('category.store');
+        Route::get('/edit', [CategoryController::class, 'edit'])->name('category.edit');
+        Route::post('/update/{id}', [CategoryController::class, 'update'])->name('category.update');
+        Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    });
+    Route::prefix('materi')->group(function () {
+        Route::get('/', [ModulController::class, 'index'])->name('materi.index');
+        Route::post('/store', [ModulController::class, 'store'])->name('materi.store');
+        Route::get('/edit', [ModulController::class, 'edit'])->name('materi.edit');
+        Route::post('/update/{id}', [ModulController::class, 'update'])->name('materi.update');
+        Route::get('/materi/detail', [ModulController::class, 'detail'])->name('materi.detail');
+        Route::delete('/delete/{id}', [ModulController::class, 'destroy'])->name('materi.destroy');
+    });
 });
 
 Route::get('/pelaporan-kekerasan', [FrontController::class, 'pelaporan'])->name('pelaporan');

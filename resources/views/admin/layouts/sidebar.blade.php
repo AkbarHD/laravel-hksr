@@ -19,9 +19,15 @@
             @if (Auth::check() && Auth::user()->role === 1)
                 {{-- Sidebar untuk Admin --}}
                 <li class="sidebar-item">
-                    <a href="javascript:void(0);" class="sidebar-link">
+                    <a href="{{ route('category.index') }}" class="sidebar-link">
                         <i class="fas fa-upload"></i>
-                        <span class="align-middle">Admin</span>
+                        <span class="align-middle">Category</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ route('materi.index') }}" class="sidebar-link">
+                        <i class="fas fa-upload"></i>
+                        <span class="align-middle">Materi</span>
                     </a>
                 </li>
             @elseif (Auth::check() && Auth::user()->role === 2)
