@@ -5,36 +5,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Modul</title>
     @include('frontend.layouts.head')
 </head>
 <style>
+    :root {
+        --secondary-color: #1d3557;
+        --light-color: #f1faee;
+        --medium-color: #a8dadc;
+        --dark-color: #457b9d;
+    }
+
     body {
         background-color: #f8f9fa;
     }
 
-    .main-content {
-        padding: 2rem 0;
-    }
-
-    .card {
+    .modul-card {
         border: none;
-        transition: transform 0.3s;
-        margin-bottom: 1.5rem;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    .modul-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
 
-    .card-img-top {
-        height: 180px;
-        background-color: #e9ecef;
+    .modul-card .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
     }
 
-    .card-body {
-        padding: 1.25rem;
+    .modul-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .modul-card .card-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modul-card .card-title {
+        font-weight: 700;
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .modul-card .card-text {
+        color: #6c757d;
+        margin-bottom: 16px;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .category-badge {
+        background: linear-gradient(135deg, var(--primary-color), #ff6b6b);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dark-color), #6fa8dc);
+        border: none;
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #3a6b91, var(--dark-color));
+        transform: translateY(-2px);
     }
 
     .search-container {
@@ -68,57 +124,27 @@
         margin-bottom: 2rem;
     }
 
-    .chatbot-btn {
-        background-color: #343a40;
-        color: white;
-        border-radius: 30px;
-        padding: 0.5rem 1rem;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        transition: all 0.3s;
-    }
-
-    .chatbot-btn:hover {
-        background-color: #212529;
-        color: white;
-    }
-
-    .chatbot-btn i {
-        margin-right: 0.5rem;
-    }
-
-    .read-more {
-        color: #0d6efd;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-    .modul-card {
-        text-align: center;
-        overflow: hidden;
-    }
-
-    .modul-card .card-title {
-        background-color: white;
-        padding: 1rem;
-        font-size: 0.9rem;
-        min-height: 80px;
-        display: flex;
-        align-items: center;
+    .pagination {
         justify-content: center;
+        margin-top: 3rem;
     }
 
-    .module-img-container {
-        background-color: black;
-        width: 100%;
-        height: 10px;
+    .pagination .page-link {
+        border-radius: 25px;
+        margin: 0 4px;
+        border: none;
+        color: var(--dark-color);
     }
 
-    .module-placeholder {
-        background-color: #ddd;
-        height: 30px;
-        margin-top: 0;
+    .pagination .page-item.active .page-link {
+        background-color: var(--dark-color);
+        border-color: var(--dark-color);
+    }
+
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
     }
 </style>
 
@@ -137,72 +163,95 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="search-container">
-                        <input type="text" class="form-control search-input" placeholder="Cari modul">
-                        <button class="btn btn-dark">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-search" viewBox="0 0 16 16">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                        </button>
+            <form method="GET" action="{{ route('modul') }}">
+                <div class="row mb-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="search-container">
+                            <input t type="text" name="search" class="form-control search-input"
+                                placeholder="Masukkan kata kunci..." value="{{ $search }}" aria-label="Search">
+                            <button type="submit" class="btn btn-dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
+
                 </div>
-                <div class="col-lg-8 col-md-6 d-flex justify-content-md-end align-items-center mb-3 mb-md-0">
-                    <a href="#" class="chatbot-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-chat-dots me-2" viewBox="0 0 16 16">
-                            <path
-                                d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                            <path
-                                d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z" />
-                        </svg>
-                        Chatbot HKSR
-                    </a>
-                </div>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card modul-card">
-                        <img src="{{ asset('assets/images/frontend/modul-1.jpg') }}" class="card-img-top"
-                            alt="Modul 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Pengenalan Kekerasan Seksual</h5>
-                            <p class="card-text">Memahami berbagai bentuk kekerasan seksual dan dampaknya pada korban.
+            </form>
+
+
+            <!-- Modul Section -->
+            <section class="bg-light rounded-4">
+                <div class="container">
+                    @if ($moduls->count() > 0)
+                        <div class="row g-4">
+                            @foreach ($moduls as $modul)
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="card modul-card">
+                                        <div class="position-relative">
+                                            @if ($modul->gambar)
+                                                <img src="{{ asset($modul->gambar) }}" class="card-img-top"
+                                                    alt="{{ $modul->judul }}">
+                                            @else
+                                                <img src="{{ asset('assets/images/frontend/default-modul.jpg') }}"
+                                                    class="card-img-top" alt="Default Image">
+                                            @endif
+                                            <div class="position-absolute top-0 start-0 p-3">
+                                                <span class="category-badge">{{ $modul->nama_category }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $modul->judul }}</h5>
+                                            <p class="card-text">
+                                                {{ Str::limit(strip_tags($modul->isi), 120, '...') }}
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar-event me-1"></i>
+                                                    {{ \Carbon\Carbon::parse($modul->created_at)->format('d M Y') }}
+                                                </small>
+                                                <a href="{{ route('modul.detail', $modul->slug) }}"
+                                                    class="btn btn-primary">
+                                                    <i class="bi bi-book me-1"></i>
+                                                    Pelajari
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-center mt-5">
+                            {{ $moduls->appends(request()->query())->links() }}
+                        </div>
+                    @else
+                        <div class="no-data">
+                            <i class="bi bi-search text-muted"></i>
+                            <h4 class="mt-3">Tidak Ada Modul Ditemukan</h4>
+                            <p class="text-muted">
+                                @if ($search || $category)
+                                    Coba ubah kata kunci pencarian
+                                @else
+                                    Belum ada modul yang tersedia saat ini.
+                                @endif
                             </p>
-                            <a href="#" class="btn btn-primary">Pelajari Modul</a>
+                            @if ($search || $category)
+                                <a href="{{ route('modul') }}" class="btn btn-primary mt-3">
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    Lihat Semua Modul
+                                </a>
+                            @endif
                         </div>
-                    </div>
+                    @endif
                 </div>
-                <div class="col-md-4">
-                    <div class="card modul-card">
-                        <img src="{{ asset('assets/images/frontend/modul-2.jpg') }}" class="card-img-top"
-                            alt="Modul 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Pencegahan Kekerasan Seksual</h5>
-                            <p class="card-text">Strategi dan praktik terbaik untuk mencegah terjadinya kekerasan
-                                seksual.</p>
-                            <a href="#" class="btn btn-primary">Pelajari Modul</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card modul-card">
-                        <img src="{{ asset('assets/images/frontend/modul-3.jpg') }}" class="card-img-top"
-                            alt="Modul 3">
-                        <div class="card-body">
-                            <h5 class="card-title">Aspek Hukum dan Pelaporan</h5>
-                            <p class="card-text">Memahami proses hukum dan cara melaporkan kasus kekerasan seksual.</p>
-                            <a href="#" class="btn btn-primary">Pelajari Modul</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <a href="#" class="btn btn-outline-primary rounded-pill px-4">Lihat Semua Modul</a>
-            </div>
+            </section>
+
+
         </div>
     </section>
 

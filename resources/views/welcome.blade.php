@@ -21,8 +21,8 @@
                     <p>Platform edukasi dan pelaporan untuk mencegah dan menangani kekerasan seksual. Belajar, laporkan,
                         dan bantu membangun lingkungan yang aman.</p>
                     <div class="d-flex">
-                        <a href="#" class="btn btn-report btn-lg me-3 rounded-pill px-4">Mulai Belajar</a>
-                        <a href="#" class="btn btn-outline-light btn-lg rounded-pill px-4">Lapor Kasus</a>
+                        <a href="{{ route('modul') }}" class="btn btn-report btn-lg me-3 rounded-pill px-4">Mulai Belajar</a>
+                        <a href="{{ route('kekerasan.seksual') }}" class="btn btn-outline-light btn-lg rounded-pill px-4">Lapor Kasus</a>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block ">
@@ -71,7 +71,7 @@
     </section>
 
     <!-- Modul Section -->
-    <section class="py-5 bg-light">
+    {{-- <section class="py-5 bg-light">
         <div class="container">
             <h2 class="section-title">Modul Pembelajaran</h2>
             <div class="row g-4">
@@ -112,7 +112,7 @@
                 <a href="#" class="btn btn-outline-primary rounded-pill px-4">Lihat Semua Modul</a>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Statistics Section -->
     <section class="py-5">
@@ -229,23 +229,6 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h2 class="mb-4">Bergabunglah dengan Kami untuk Menciptakan Lingkungan yang Aman</h2>
-                    <p class="mb-4">Daftarkan diri Anda untuk mendapatkan akses ke modul pembelajaran dan bantuan
-                        dari tim kami.</p>
-                    <div class="d-flex justify-content-center">
-                        <a href="#" class="btn btn-report btn-lg me-3 rounded-pill px-4">Daftar Sekarang</a>
-                        <a href="#" class="btn btn-outline-secondary btn-lg rounded-pill px-4">Pelajari Lebih
-                            Lanjut</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     @include('frontend.layouts.footer')

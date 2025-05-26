@@ -43,11 +43,20 @@
                 <li class="sidebar-item ">
                     <a href="javascript:void(0);" class="sidebar-link">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span class="align-middle">{{ __('User') }}</span>
+                        <span class="align-middle">{{ __('List Laporan') }}</span>
                     </a>
                 </li>
             @endif
+
+            <li class="sidebar-item {{ request()->routeIs('home') ? 'active' : '' }}">
+                <a href="{{ route('home') }}" class="sidebar-link">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span class="align-middle">Beranda</span>
+                </a>
+            </li>
         </ul>
+
+
 
 
 

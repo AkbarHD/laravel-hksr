@@ -145,20 +145,22 @@
                     <p class="form-instruction">Silahkan isi form berikut untuk melaporkan kejadian kekerasan seksual.
                     </p>
 
-                    <form>
+                    <form method="POST" action="{{ route('pelaporan.store') }}" enctype="multipart/form-data">
+                        @csrf
+
                         <div class="identity-selection mb-4">
                             <label class="form-label">Identitas Pelapor</label>
                             <div class="d-flex">
                                 <div class="form-check me-4">
                                     <input class="form-check-input" type="radio" name="identityType" id="anon"
-                                        checked>
+                                        value="anonim" checked>
                                     <label class="form-check-label" for="anon">
                                         Anonim
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="identityType"
-                                        id="withIdentity">
+                                    <input class="form-check-input" type="radio" name="identityType" id="withIdentity"
+                                        value="identitas">
                                     <label class="form-check-label" for="withIdentity">
                                         Dengan Identitas
                                     </label>
@@ -166,26 +168,71 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label" for="reportTitle">Judul Laporan</label>
-                            <input type="text" class="form-control" id="reportTitle">
+                        <div id="identityFields" class="mb-4 d-none">
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" class="form-control" name="nama" id="nama">
+                            </div>
+                            <div class="mb-3">
+                                <label for="no_hp" class="form-label">No HP</label>
+                                <input type="text" class="form-control" name="no_hp" id="no_hp">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" id="email">
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label" for="eventDescription">Deskripsi Kejadian</label>
-                            <textarea class="form-control" id="eventDescription"></textarea>
+                            <label class="form-label" for="reportTitle">Judul Laporan <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('judul') is-invalid @enderror"
+                                name="judul" id="reportTitle" value="{{ old('judul') }}" required>
+                            @error('judul')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="category_id">Kategori Laporan <span
+                                    class="text-danger">*</span></label>
+                            <select name="category_id" id="category_id"
+                                class="form-control @error('category_id') is-invalid @enderror" required>
+                                <option value="">Pilih Category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->nama_category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="deskripsi">Deskripsi Kejadian <span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control @error('deskripsi') is-invalid @enderror" name="deskripsi" id="deskripsi" rows="4"
+                                required>{{ old('deskripsi') }}</textarea>
+                            @error('deskripsi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Bukti (Opsional)</label>
-                            <div class="upload-area">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p class="mb-0"><a href="#" class="upload-text">Klik untuk upload</a></p>
-                            </div>
+                            <input type="file" class="form-control @error('bukti') is-invalid @enderror"
+                                name="bukti" accept=".jpg,.jpeg,.png,.pdf">
+                            <div class="form-text">Format yang diizinkan: JPG, PNG, PDF. Maksimal 5MB</div>
+                            @error('bukti')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="text-end">
-                            <button type="submit" class="btn-submit">Kirim</button>
+                            <button type="submit" class="btn btn-primary">Kirim</button>
                         </div>
                     </form>
                 </div>
@@ -196,23 +243,25 @@
                 <div class="status-container">
                     <h5 class="status-title">Status Pelaporan</h5>
 
-                    <div class="report-card">
-                        <span class="status-badge status-processing">Diproses</span>
-                        <h6 class="report-title">Judul Laporan 1</h6>
-                        <p class="report-date">tanggal</p>
-                    </div>
+                    @forelse ($pelapors as $pelapor)
+                        <div class="report-card">
+                            @if ($pelapor->status == 0)
+                                <span class="status-badge status-processing">Diproses</span>
+                            @elseif ($pelapor->status == 1)
+                                <span class="status-badge status-completed">Selesai</span>
+                            @else
+                                <span class="status-badge status-rejected">Ditolak</span>
+                            @endif
+                            <h6 class="report-title">{{ $pelapor->judul }}</h6>
+                            <p class="report-date mt-3">
+                                {{ \Carbon\Carbon::parse($pelapor->created_at)->diffForHumans() }}
+                            </p>
 
-                    <div class="report-card">
-                        <span class="status-badge status-completed">Selesai</span>
-                        <h6 class="report-title">Judul Laporan 2</h6>
-                        <p class="report-date">tanggal</p>
-                    </div>
 
-                    <div class="report-card">
-                        <span class="status-badge status-rejected">Ditolak</span>
-                        <h6 class="report-title">Judul Laporan 3</h6>
-                        <p class="report-date">tanggal</p>
-                    </div>
+                        </div>
+                    @empty
+                        <p>Tidak ada laporan.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -222,20 +271,14 @@
     @include('frontend.layouts.script')
     <script>
         $(document).ready(function() {
-            // Upload area click handler
-            $('.upload-area').click(function() {
-                // Here you would trigger a file upload dialog
-                // For a real implementation, you'd create a hidden file input and trigger its click event
-                alert('Fitur upload file akan diimplementasikan');
-            });
-
-            // Form submission (prevent default for demo)
-            $('form').submit(function(e) {
-                e.preventDefault();
-                alert('Laporan telah dikirim. Terima kasih atas laporan Anda.');
-                // Clear form fields
-                $('#reportTitle').val('');
-                $('#eventDescription').val('');
+            $('input[name="identityType"]').on('change', function() {
+                if ($(this).val() === 'identitas') {
+                    $('#identityFields').removeClass('d-none');
+                } else {
+                    $('#identityFields').addClass('d-none');
+                    // Kosongkan nilai agar tidak ikut dikirim jika anonim
+                    $('#identityFields input').val('');
+                }
             });
         });
     </script>

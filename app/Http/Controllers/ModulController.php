@@ -48,6 +48,7 @@ class ModulController extends Controller
             DB::table('modul')->insert([
                 'judul' => $request->judul,
                 'slug' => Str::slug($request->judul),
+                'user_id' => auth()->user()->id,
                 'category_id' => $request->category_id,
                 'gambar' => $gambarPath,
                 'isi' => $request->isi,
@@ -118,6 +119,8 @@ class ModulController extends Controller
 
             DB::table('modul')->where('id', $id)->update([
                 'judul' => $request->judul,
+                'slug' => Str::slug($request->judul),
+                'user_id' => auth()->user()->id,
                 'category_id' => $request->category_id,
                 'isi' => $request->isi,
                 'gambar' => $gambarPath,

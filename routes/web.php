@@ -3,8 +3,10 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ListLaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModulController;
+use App\Http\Controllers\PelaporController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,6 +27,10 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 Route::get('/', [FrontController::class, 'index'])->name('home');
+Route::get('/modul', [FrontController::class, 'modul'])->name('modul');
+Route::get('/modul/{slug}', [FrontController::class, 'detailModul'])->name('modul.detail');
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -44,10 +50,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/materi/detail', [ModulController::class, 'detail'])->name('materi.detail');
         Route::delete('/delete/{id}', [ModulController::class, 'destroy'])->name('materi.destroy');
     });
+
+    // pelaporan
+    Route::get('/pelaporan-kekerasan', [FrontController::class, 'pelaporan'])->name('kekerasan.seksual');
+    Route::prefix('pelaporan')->group(function () {
+        Route::get('/', [PelaporController::class, 'pelaporan'])->name('pelaporan.index');
+        Route::post('/store', [PelaporController::class, 'store'])->name('pelaporan.store');
+        Route::delete('/delete/{id}', [PelaporController::class, 'destroy'])->name('pelaporan.destroy');
+    });
+
+    Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('pelapor.index');
 });
 
-Route::get('/pelaporan-kekerasan', [FrontController::class, 'pelaporan'])->name('pelaporan');
-Route::get('/modul', [FrontController::class, 'modul'])->name('modul');
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login', [LoginController::class, 'loginProses'])->name('loginProses');
