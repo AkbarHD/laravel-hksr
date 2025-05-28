@@ -38,8 +38,8 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->routeIs('admin.laporan.pending') ? 'active' : '' }}">
-                    <a href="{{ route('admin.laporan.pending') }}" class="sidebar-link">
+                <li class="sidebar-item {{ request()->routeIs('admin.managament.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.managament.index') }}" class="sidebar-link">
                         <i class="fas fa-upload"></i>
                         <span class="align-middle">Manajement User</span>
                     </a>

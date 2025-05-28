@@ -37,6 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+    Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
+    Route::put('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
+
     Route::prefix('category')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('category.index');
         Route::post('/store', [CategoryController::class, 'store'])->name('category.store');
@@ -70,7 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/laporan/{id}/tolak', [ListLaporanController::class, 'tolak'])->name('laporan.tolak');
     Route::get('/laporan/ajax/detail/{id}', [ListLaporanController::class, 'getDetail'])->name('laporan.ajax.detail');
 
-    Route::get('/admin/managament-user', [ManagementUserController::class, 'index'])->name('admin.managament.user');
+    Route::get('/admin/managament-user', [ManagementUserController::class, 'index'])->name('admin.managament.index');
+    Route::post('/admin/managament-user/store', [ManagementUserController::class, 'store'])->name('admin.managament.store');
+    Route::delete('/admin/managament-user/delete/{id}', [ManagementUserController::class, 'destroy'])->name('admin.managament.destroy');
 
     // stackholder
     Route::get('/stackholder/laporan-pending', [StackholderController::class, 'laporanPending'])->name('stackholder.laporan.pending');

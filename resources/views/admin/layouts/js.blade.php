@@ -20,6 +20,8 @@
 <script type="text/javascript" src="{{ asset('/btech/btech.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/btech/notifikasi.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {{-- untuk dataTable secara global --}}
 
 <script>

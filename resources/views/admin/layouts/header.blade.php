@@ -34,11 +34,11 @@
 
                 <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
 
-                    @if (auth()->user()->logo == null)
-                        <img src="{{ asset('uploads/logo/logo-kuda.jpg') }}" class="avatar img-fluid rounded me-1"
+                    @if (auth()->user()->image == null)
+                        <img src="{{ asset('no_images.jpg') }}" class="avatar img-fluid rounded me-1"
                             alt="{{ auth()->user()->name }}" />
                     @else
-                        <img src="{{ asset(auth()->user()->logo) }}"
+                        <img src="{{ asset(auth()->user()->image) }}"
                             class="avatar img-fluid rounded me-1" alt="{{ auth()->user()->name }}" />
                     @endif
 
@@ -47,7 +47,7 @@
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item" href="javascript:void(0);"><i class="align-middle me-1"
+                    <a class="dropdown-item" href="{{ route('profile') }}"><i class="align-middle me-1"
                             data-feather="user"></i>
                         Profile</a>
                     <div class="dropdown-divider"></div>
