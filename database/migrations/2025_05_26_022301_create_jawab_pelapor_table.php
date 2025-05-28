@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('jawab_pelapor', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pelapor_id')->constrained()->onDelete('cascade');
-            $table->string('tindak_lanjut'); // nanti akan berbentu radio button yang pilihannya : rujukan ke klinik, bantuan hukum, dan konseling
-            $table->text('catatan_tindak_lanjut'); // nanti akan berbentu radio button yang pilihannya : rujukan ke klinik, bantuan hukum, dan konseling
+            $table->string('tindak_lanjut')->nullable(); // nanti akan berbentu radio button yang pilihannya : rujukan ke klinik, bantuan hukum, dan konseling
+            $table->text('catatan_tindak_lanjut')->nullable(); // text untuk catatan tindak lanjut
             $table->integer('status')->default(0); // 0 : dalam proses, 1 selesai
             $table->char('isdelete', 1)->default('0');
             $table->timestamps();

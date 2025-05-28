@@ -5,8 +5,10 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListLaporanController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ManagementUserController;
 use App\Http\Controllers\ModulController;
 use App\Http\Controllers\PelaporController;
+use App\Http\Controllers\StackholderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -59,7 +61,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('/delete/{id}', [PelaporController::class, 'destroy'])->name('pelaporan.destroy');
     });
 
-    Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('pelapor.index');
+    Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('list.laporan.index');
+    Route::get('/detail-pelapor/{id}', [ListLaporanController::class, 'show'])->name('list.laporan.detail');
+    Route::delete('/delete-pelapor/{id}', [ListLaporanController::class, 'destroy'])->name('list.laporan.destroy');
+    // admin
+    Route::get('/admin/laporan-pending', [ListLaporanController::class, 'pendingLaporan'])->name('admin.laporan.pending');
+    Route::post('/laporan/{id}/verifikasi', [ListLaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
+    Route::post('/laporan/{id}/tolak', [ListLaporanController::class, 'tolak'])->name('laporan.tolak');
+    Route::get('/laporan/ajax/detail/{id}', [ListLaporanController::class, 'getDetail'])->name('laporan.ajax.detail');
+
+    Route::get('/admin/managament-user', [ManagementUserController::class, 'index'])->name('admin.managament.user');
+
+    // stackholder
+    Route::get('/stackholder/laporan-pending', [StackholderController::class, 'laporanPending'])->name('stackholder.laporan.pending');
+    Route::get('/stackholder/laporan/{id}', [StackholderController::class, 'getLaporan']);
+    Route::post('/stackholder/tindaklanjut/simpan', [StackholderController::class, 'simpanTindakLanjut']);
+    Route::get('/stackholder/laporan/detail/{id}', [StackholderController::class, 'getLaporanById']);
+    Route::get('/user/hasil-tindaklanjut', [StackholderController::class, 'hasilTindakLanjut'])->name('user.hasil.tindaklanjut');
+
+
 });
 
 
