@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\FrontendKonselorController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KonselorController;
 use App\Http\Controllers\ListLaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagementUserController;
@@ -62,6 +64,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [PelaporController::class, 'pelaporan'])->name('pelaporan.index');
         Route::post('/store', [PelaporController::class, 'store'])->name('pelaporan.store');
         Route::delete('/delete/{id}', [PelaporController::class, 'destroy'])->name('pelaporan.destroy');
+    });
+
+    // data master konselor
+    Route::prefix('list-konselor')->group(function () {
+        Route::get('/', [KonselorController::class, 'index'])->name('list.konselor.index');
+        Route::get('/create', [KonselorController::class, 'create'])->name('list.konselor.create');
+        Route::post('/update/{id}', [KonselorController::class, 'update'])->name('list.konselor.update');
+        Route::get('/edit/{id}', [KonselorController::class, 'edit'])->name('list.konselor.edit');
+        Route::get('/detail/{id}', [KonselorController::class, 'detail'])->name('list.konselor.detail');
+        Route::post('/store', [KonselorController::class, 'store'])->name('list.konselor.store');
+        Route::delete('/delete/{id}', [KonselorController::class, 'destroy'])->name('list.konselor.destroy');
+    });
+
+    // konselo
+    Route::prefix('konselor')->group(function () {
+        Route::get('/', [FrontendKonselorController::class, 'index'])->name('konselor.index');
+        Route::get('/detail/{id}', [FrontendKonselorController::class, 'show'])->name('konselor.detail');
+        Route::get('/detail', [FrontendKonselorController::class, 'show'])->name('frontend.konselor.send-message');
     });
 
     Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('list.laporan.index');

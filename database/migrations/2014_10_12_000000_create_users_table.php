@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('gender', 50); // male, female
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('role'); // 1 admin, 2, staff, 3 user
+            $table->integer('role'); // 1 admin, 2, staff, 3 user, 4 konselor
             $table->rememberToken();
             $table->timestamps();
         });

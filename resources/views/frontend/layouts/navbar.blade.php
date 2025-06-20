@@ -19,6 +19,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('kekerasan.seksual') }}">Pelaporan Kekerasan</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('konselor.index') }}">Konselor</a>
+                </li>
             </ul>
             @auth
                 <div class="ms-2 mt-2">

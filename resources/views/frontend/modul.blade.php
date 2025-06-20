@@ -150,8 +150,6 @@
 
 <body>
     @include('frontend.layouts.navbar')
-
-
     <!-- Main content area -->
     <section class="py-5 bg-light">
         <div class="container">

@@ -10,6 +10,7 @@ class ListLaporanController extends Controller
 {
     public function index()
     {
+        //
         $listLaporans = DB::table('pelapors')
             ->join('categories', 'pelapors.category_id', '=', 'categories.id')
             ->select('pelapors.*', 'categories.nama_category')

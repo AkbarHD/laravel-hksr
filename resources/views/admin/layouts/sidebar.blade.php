@@ -66,6 +66,14 @@
                         <span class="align-middle">{{ __('Laporan Terjawab') }}</span>
                     </a>
                 </li>
+            @elseif (Auth::check() && Auth::user()->role === 4)
+                {{-- Sidebar untuk user --}}
+                <li class="sidebar-item {{ request()->routeIs('list.konselor.index') ? 'active' : '' }}">
+                    <a href="{{ route('list.konselor.index') }}" class="sidebar-link">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span class="align-middle">{{ __('List Konselor') }}</span>
+                    </a>
+                </li>
             @endif
 
             <li class="sidebar-item {{ request()->routeIs('home') ? 'active' : '' }}">
@@ -75,10 +83,5 @@
                 </a>
             </li>
         </ul>
-
-
-
-
-
     </div>
 </nav>
