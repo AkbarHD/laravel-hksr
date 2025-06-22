@@ -196,11 +196,37 @@
                 </div>
             </div>
 
+            <!-- Modul Views Chart -->
+            <div class="col-md-6 mb-4">
+                <div class="card chart-card modul-card">
+                    <div class="card-header card-header-custom">
+                        <h5>
+                            <i class="fas fa-book chart-icon"></i>
+                            Statistik Modul Terpopuler
+                        </h5>
+                    </div>
+                    <div class="card-body card-body-custom">
+                        <div class="chart-container">
+                            <canvas id="modulChart"></canvas>
+                        </div>
+                        <div class="stats-info">
+                            <div class="stats-item">
+                                <div class="stats-number">{{ $modulViews->sum('views') }}</div>
+                                <div class="stats-label">Total Views</div>
+                            </div>
+                            <div class="stats-item">
+                                <div class="stats-number">{{ $modulViews->count() }}</div>
+                                <div class="stats-label">Modul Ditampilkan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>
 @endif
-
 
 @endsection
 
@@ -244,55 +270,87 @@
     });
 
     // Monthly Chart
-  const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
-    type: 'line',
-    data: {
-        labels: {!! json_encode(
-            $monthlyData->pluck('bulan')->map(function ($m) {
-                return \Carbon\Carbon::create()->month($m)->format('M');
-            }),
-        ) !!},
-        datasets: [{
-            label: 'Jumlah Laporan',
-            data: {!! json_encode($monthlyData->pluck('total')) !!},
-            fill: false,
-            borderColor: 'purple',
-            backgroundColor: 'purple',
-            borderWidth: 2,
-            tension: 0.4,
-            pointBackgroundColor: 'white',
-            pointBorderColor: 'purple',
-            pointBorderWidth: 2,
-            pointRadius: 4
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: true,
-                labels: {
-                    boxWidth: 12
-                }
-            }
+    const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: {!! json_encode(
+                $monthlyData->pluck('bulan')->map(function ($m) {
+                    return \Carbon\Carbon::create()->month($m)->format('M');
+                }),
+            ) !!},
+            datasets: [{
+                label: 'Jumlah Laporan',
+                data: {!! json_encode($monthlyData->pluck('total')) !!},
+                fill: false,
+                borderColor: 'purple',
+                backgroundColor: 'purple',
+                borderWidth: 2,
+                tension: 0.4,
+                pointBackgroundColor: 'white',
+                pointBorderColor: 'purple',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
         },
-        scales: {
-            x: {
-                grid: {
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
                     display: true,
-                    color: '#e0e0e0'
+                    labels: {
+                        boxWidth: 12
+                    }
                 }
             },
-            y: {
-                beginAtZero: true,
-                grid: {
-                    display: true,
-                    color: '#e0e0e0'
+            scales: {
+                x: {
+                    grid: {
+                        display: true,
+                        color: '#e0e0e0'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true,
+                        color: '#e0e0e0'
+                    }
                 }
             }
         }
-    }
-});
+    });
 
+    const modulChart = new Chart(document.getElementById('modulChart'), {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($modulViews->pluck('judul')) !!},
+            datasets: [{
+                label: 'Jumlah Dilihat',
+                data: {!! json_encode($modulViews->pluck('views')) !!},
+                backgroundColor: '#FFCE56'
+            }]
+        },
+        options: {
+            indexAxis: 'y', // horizontal bar chart
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.parsed.x} kali dilihat`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 </script>
 @endsection

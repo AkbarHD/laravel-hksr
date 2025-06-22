@@ -5,6 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\FrontendKonselorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KonselorController;
+use App\Http\Controllers\KonselorDashboardController;
 use App\Http\Controllers\ListLaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagementUserController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\ModulController;
 use App\Http\Controllers\PelaporController;
 use App\Http\Controllers\StackholderController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -33,7 +35,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontController::class, 'index'])->name('home');
 Route::get('/modul', [FrontController::class, 'modul'])->name('modul');
 Route::get('/modul/{slug}', [FrontController::class, 'detailModul'])->name('modul.detail');
-
+Route::get('/modul/download/{id}', [FrontController::class, 'downloadModulPdf'])->name('modul.download.pdf');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin');
@@ -81,7 +83,16 @@ Route::middleware('auth')->group(function () {
     Route::prefix('konselor')->group(function () {
         Route::get('/', [FrontendKonselorController::class, 'index'])->name('konselor.index');
         Route::get('/detail/{id}', [FrontendKonselorController::class, 'show'])->name('konselor.detail');
-        Route::get('/detail', [FrontendKonselorController::class, 'show'])->name('frontend.konselor.send-message');
+        Route::post('/send-message', [FrontendKonselorController::class, 'sendMessage'])->name('konselor.send-message');
+        Route::get('messages/{id}', [FrontendKonselorController::class, 'getMessage'])->name('konselor.message');
+    });
+
+    // web.php - tambahkan route group untuk konselor dashboard
+    Route::prefix('konselor-dashboard')->group(function () {
+        Route::get('/', [KonselorDashboardController::class, 'index'])->name('konselor-dashboard.index');
+        Route::get('/chat/{sessionId}', [KonselorDashboardController::class, 'chat'])->name('konselor-dashboard.chat');
+        Route::post('/send-message', [KonselorDashboardController::class, 'sendMessage'])->name('konselor-dashboard.send-message');
+        Route::get('/messages/{sessionId}', [KonselorDashboardController::class, 'getMessages'])->name('konselor-dashboard.messages');
     });
 
     Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('list.laporan.index');
@@ -92,6 +103,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/laporan/{id}/verifikasi', [ListLaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
     Route::post('/laporan/{id}/tolak', [ListLaporanController::class, 'tolak'])->name('laporan.tolak');
     Route::get('/laporan/ajax/detail/{id}', [ListLaporanController::class, 'getDetail'])->name('laporan.ajax.detail');
+    Route::get('/laporan/pdf/{id}', [ListLaporanController::class, 'downloadPdf']);
+
 
     Route::get('/admin/managament-user', [ManagementUserController::class, 'index'])->name('admin.managament.index');
     Route::post('/admin/managament-user/store', [ManagementUserController::class, 'store'])->name('admin.managament.store');
@@ -103,7 +116,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/stackholder/tindaklanjut/simpan', [StackholderController::class, 'simpanTindakLanjut']);
     Route::get('/stackholder/laporan/detail/{id}', [StackholderController::class, 'getLaporanById']);
     Route::get('/user/hasil-tindaklanjut', [StackholderController::class, 'hasilTindakLanjut'])->name('user.hasil.tindaklanjut');
-
+    Route::get('/stackholder/laporan/pdf/{id}', [StackholderController::class, 'downloadPDF']);
 
 });
 
@@ -112,4 +125,3 @@ Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login', [LoginController::class, 'loginProses'])->name('loginProses');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::post('/register', [LoginController::class, 'registerProses'])->name('registerProses');
-

@@ -415,8 +415,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <a id="btn-download-pdf" href="#" class="btn btn-outline-danger">
+                        <i class="fas fa-file-pdf me-1"></i> Download PDF
+                    </a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -487,6 +491,8 @@
                         '<span class="badge bg-warning">Proses</span>' :
                         '<span class="badge bg-success">Selesai</span>';
                     $('#detail-status').html(statusBadge);
+
+                    $('#btn-download-pdf').attr('href', '/stackholder/laporan/pdf/' + id);
 
                     $('#modalDetailLaporan').modal('show');
                 });

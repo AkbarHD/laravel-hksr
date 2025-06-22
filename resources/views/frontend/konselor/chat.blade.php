@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Konsultasi dengan {{ $konselor->user_name }} - HKSR</title>
     @include('frontend.layouts.head')
     <style>
@@ -286,7 +287,7 @@
             <div class="col-lg-4 col-md-5 chat-sidebar">
                 <div class="konselor-profile">
                     @if ($konselor->gambar_konselor)
-                        <img src="{{ asset( $konselor->gambar_konselor) }}" alt="{{ $konselor->user_name }}"
+                        <img src="{{ asset($konselor->gambar_konselor) }}" alt="{{ $konselor->user_name }}"
                             class="profile-image">
                     @else
                         <div class="profile-placeholder">
@@ -403,7 +404,7 @@
                 messageInput.prop('disabled', true);
 
                 $.ajax({
-                    url: '{{ route('frontend.konselor.send-message') }}',
+                    url: '{{ route('konselor.send-message') }}',
                     method: 'POST',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -412,7 +413,11 @@
                     },
                     success: function(response) {
                         messageInput.val('');
-                        loadMessages();
+
+                        // Langsung tampilkan pesan baru tanpa reload semua
+                        if (response.message) {
+                            appendNewMessage(response.message);
+                        }
                     },
                     error: function(xhr) {
                         alert('Gagal mengirim pesan. Silakan coba lagi.');
@@ -424,6 +429,31 @@
                     }
                 });
             });
+
+            function appendNewMessage(message) {
+                // Hapus no-messages jika ada
+                $('.no-messages').remove();
+
+                const isOwn = message.sender_id == {{ Auth::id() }};
+                const time = new Date(message.sent_at).toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const messageHtml = `
+        <div class="message ${isOwn ? 'own' : ''}">
+            <div class="message-bubble">
+                ${message.message}
+                <div class="message-info">
+                    ${message.sender_name} • ${time}
+                </div>
+            </div>
+        </div>
+    `;
+
+                chatMessages.append(messageHtml);
+                scrollToBottom();
+            }
 
             // Load messages
             function loadMessages() {

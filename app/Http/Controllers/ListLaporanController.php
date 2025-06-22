@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ListLaporanController extends Controller
 {
@@ -62,8 +63,8 @@ class ListLaporanController extends Controller
         $laporanPending = DB::table('pelapors')
             ->join('categories', 'pelapors.category_id', '=', 'categories.id')
             ->select('pelapors.*', 'categories.nama_category')
-            ->where('pelapors.status', 0)
             ->where('pelapors.isdelete', 0)
+            ->orderBy('pelapors.status', 'asc')
             ->orderBy('pelapors.created_at', 'desc')
             ->get();
 
@@ -114,9 +115,12 @@ class ListLaporanController extends Controller
     {
         $laporan = DB::table('pelapors')
             ->join('categories', 'pelapors.category_id', '=', 'categories.id')
+            ->leftJoin('jawab_pelapor', 'pelapors.id', '=', 'jawab_pelapor.pelapor_id')
             ->select(
                 'pelapors.*',
                 'categories.nama_category',
+                'jawab_pelapor.tindak_lanjut',
+                'jawab_pelapor.catatan_tindak_lanjut',
                 DB::raw("CASE
                 WHEN pelapors.status = 0 THEN 'Menunggu Verifikasi'
                 WHEN pelapors.status = 1 THEN 'Terverifikasi'
@@ -134,6 +138,32 @@ class ListLaporanController extends Controller
         return response()->json($laporan);
     }
 
+    public function downloadPdf($id)
+    {
+        $laporan = DB::table('pelapors')
+            ->join('categories', 'pelapors.category_id', '=', 'categories.id')
+            ->leftJoin('jawab_pelapor', 'pelapors.id', '=', 'jawab_pelapor.pelapor_id')
+            ->select(
+                'pelapors.*',
+                'categories.nama_category',
+                'jawab_pelapor.tindak_lanjut',
+                'jawab_pelapor.catatan_tindak_lanjut',
+                DB::raw("CASE
+                WHEN pelapors.status = 0 THEN 'Menunggu Verifikasi'
+                WHEN pelapors.status = 1 THEN 'Terverifikasi'
+                WHEN pelapors.status = 2 THEN 'Ditolak'
+                ELSE 'Tidak Diketahui'
+            END as status_text")
+            )
+            ->where('pelapors.id', $id)
+            ->first();
 
+        if (!$laporan) {
+            abort(404, 'Laporan tidak ditemukan.');
+        }
 
+        $pdf = PDF::loadView('admin.list_laporan.laporan-pdf', compact('laporan'));
+
+        return $pdf->download('Laporan_' . $laporan->id_pelapor . '.pdf');
+    }
 }

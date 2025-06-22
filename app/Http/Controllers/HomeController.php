@@ -55,6 +55,15 @@ class HomeController extends Controller
             ->where('status', 2)
             ->where('isdelete', '0')
             ->count();
+
+        // untuk munclukan 10 modul dengan views terbanyak
+        $modulViews = DB::table('modul')
+            ->select('judul', 'views')
+            ->orderByDesc('views')
+            ->where('isdelete', '0')
+            ->limit(10)
+            ->get();
+
         return view('admin.homeadmin', compact(
             'genderData',
             'categoryData',
@@ -62,7 +71,8 @@ class HomeController extends Controller
             'totalLaporan',
             'totalDalamProses',
             'totalSelesai',
-            'totalDitolak'
+            'totalDitolak',
+            'modulViews' // <--- ini
         ));
     }
 

@@ -241,32 +241,23 @@
                             onerror="this.src='{{ asset('assets/images/frontend/default-modul.jpg') }}'">
                     @endif
 
-                    <!-- Share Section -->
-                    <div class="share-section">
-                        <h6 class="fw-bold mb-3">
-                            <i class="bi bi-share me-2"></i>Bagikan Modul Ini:
-                        </h6>
-                        <a href="https://wa.me/?text={{ urlencode($modul->judul . ' - ' . url()->current()) }}"
-                            target="_blank" class="share-btn">
-                            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                    <!-- Info Views dan Tombol Download -->
+                    <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
+                        <small class="text-muted">
+                            <i class="fas fa-eye me-1"></i> {{ number_format($modul->views) }} kali dilihat
+                        </small>
+
+                        <a href="{{ route('modul.download.pdf', $modul->id) }}" class="btn btn-success btn-sm"
+                            target="_blank">
+                            <i class="fas fa-download me-1"></i> Unduh Modul
                         </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ url()->current() }}" target="_blank"
-                            class="share-btn facebook">
-                            <i class="bi bi-facebook me-2"></i>Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($modul->judul) }}&url={{ url()->current() }}"
-                            target="_blank" class="share-btn twitter">
-                            <i class="bi bi-twitter me-2"></i>Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url()->current() }}"
-                            target="_blank" class="share-btn linkedin">
-                            <i class="bi bi-linkedin me-2"></i>LinkedIn
-                        </a>
+
                     </div>
+
 
                     <!-- Modul Content -->
                     <div class="modul-content">
-                        {!!$modul->isi !!}
+                        {!! $modul->isi !!}
                     </div>
                 </div>
             </div>

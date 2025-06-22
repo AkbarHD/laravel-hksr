@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StackholderController extends Controller
 {
@@ -125,5 +126,34 @@ class StackholderController extends Controller
         return view('admin.list_laporan.hasil_tindaklanjut', compact('hasilTindakLanjut'));
     }
 
+    public function downloadPDF($id)
+    {
+        $laporan = DB::table('pelapors')
+            ->join('jawab_pelapor', 'pelapors.id', '=', 'jawab_pelapor.pelapor_id')
+            ->join('categories', 'pelapors.category_id', '=', 'categories.id')
+            ->select(
+                'pelapors.id_pelapor',
+                'pelapors.judul',
+                'pelapors.deskripsi',
+                'pelapors.nama',
+                'pelapors.no_hp',
+                'pelapors.email',
+                'pelapors.bukti',
+                'pelapors.catatan',
+                'pelapors.created_at',
+                'categories.nama_category',
+                'jawab_pelapor.tindak_lanjut',
+                'jawab_pelapor.catatan_tindak_lanjut',
+                'jawab_pelapor.status as status_jawab'
+            )
+            ->where('jawab_pelapor.id', $id)
+            ->first();
 
+        if (!$laporan) {
+            abort(404);
+        }
+
+        $pdf = Pdf::loadView('admin.stackholder.laporan_pdf', compact('laporan'))->setPaper('A4');
+        return $pdf->download('Laporan_' . $laporan->id_pelapor . '.pdf');
+    }
 }

@@ -33,10 +33,27 @@
                     <div class="card report-card mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <span class="badge badge-warning-custom">
-                                    <i class="fas fa-clock me-1"></i>
-                                    Menunggu Verifikasi
-                                </span>
+                                @if ($laporan->status == 0)
+                                    <span class="badge badge-warning-custom">
+                                        <i class="fas fa-clock me-1"></i>
+                                        Menunggu Verifikasi
+                                    </span>
+                                @elseif($laporan->status == 1)
+                                    <span class="badge badge-success-custom">
+                                        <i class="fas fa-check me-1"></i>
+                                        Terverifikasi
+                                    </span>
+                                @elseif($laporan->status == 2)
+                                    <span class="badge badge-danger-custom">
+                                        <i class="fas fa-times me-1"></i>
+                                        Ditolak
+                                    </span>
+                                @else
+                                    <span class="badge badge-secondary-custom">
+                                        <i class="fas fa-question me-1"></i>
+                                        Status Tidak Diketahui
+                                    </span>
+                                @endif
                             </div>
 
                             <h5 class="card-title">
@@ -65,18 +82,27 @@
                             </div>
 
                             <div class="d-flex action-buttons">
-                                <button class="btn btn-action btn-success-custom btn-verifikasi"
-                                    data-id="{{ $laporan->id }}">
-                                    <i class="fas fa-check me-2"></i>Verifikasi
-                                </button>
+                                @if ($laporan->status == 2 || $laporan->status == 1)
+                                    <button class="btn btn-action btn-secondary-custom btn-detail"
+                                        data-id="{{ $laporan->id }}" data-bs-toggle="modal" data-bs-target="#modalDetail">
+                                        <i class="fas fa-eye me-2"></i>Detail
+                                    </button>
+                                @else
+                                    <button class="btn btn-action btn-success-custom btn-verifikasi"
+                                        data-id="{{ $laporan->id }}">
+                                        <i class="fas fa-check me-2"></i>Verifikasi
+                                    </button>
 
-                                <button class="btn btn-action btn-danger-custom btn-tolak" data-id="{{ $laporan->id }}">
-                                    <i class="fas fa-times me-2"></i>Tolak
-                                </button>
-                                <button class="btn btn-action btn-secondary-custom btn-detail" data-id="{{ $laporan->id }}"
-                                    data-bs-toggle="modal" data-bs-target="#modalDetail">
-                                    <i class="fas fa-eye me-2"></i>Detail
-                                </button>
+                                    <button class="btn btn-action btn-danger-custom btn-tolak"
+                                        data-id="{{ $laporan->id }}">
+                                        <i class="fas fa-times me-2"></i>Tolak
+                                    </button>
+
+                                    <button class="btn btn-action btn-secondary-custom btn-detail"
+                                        data-id="{{ $laporan->id }}" data-bs-toggle="modal" data-bs-target="#modalDetail">
+                                        <i class="fas fa-eye me-2"></i>Detail
+                                    </button>
+                                @endif
 
                             </div>
                         </div>
@@ -213,6 +239,16 @@
                                 </div>
                                 <div class="detail-value" id="detail-email">john@example.com</div>
                             </div>
+
+                            <div class="detail-item right animate-right" style="animation-delay: 1.0s;">
+                                <div class="detail-label">
+                                    <div class="detail-icon icon-notes">
+                                        <i class="fas fa-sticky-note"></i>
+                                    </div>
+                                    Tindak Lanjut
+                                </div>
+                                <div class="detail-value" id="detail-tindaklanjut">-</div>
+                            </div>
                         </div>
 
                         <!-- Kolom Kanan -->
@@ -273,16 +309,31 @@
                                 </div>
                                 <div class="detail-value" id="detail-catatan">-</div>
                             </div>
+
+                            <div class="detail-item right animate-right" style="animation-delay: 1.0s;">
+                                <div class="detail-label">
+                                    <div class="detail-icon icon-notes">
+                                        <i class="fas fa-sticky-note"></i>
+                                    </div>
+                                    Catatan Tindak Lanjut
+                                </div>
+                                <div class="detail-value" id="detail-catatanTindakLanjut">-</div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-download-pdf">
+                        <i class="fas fa-file-pdf me-1"></i> Download PDF
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
-
-
-
-
 @endsection
 
 @section('js')
@@ -340,11 +391,17 @@
                                 '<span class="no-evidence">Tidak ada bukti</span>');
                         }
 
-                        $('#detail-nama').text(data.nama);
+                        $('#detail-nama').text(data.nama || 'anonim');
                         $('#detail-nohp').text(data.no_hp);
                         $('#detail-email').text(data.email);
                         $('#detail-catatan').text(data.catatan || '-');
+                        $('#detail-tindaklanjut').text(data.tindak_lanjut || '-');
+                        $('#detail-catatanTindakLanjut').text(data.catatan_tindak_lanjut ||
+                            '-');
 
+                        $('#btn-download-pdf').off('click').on('click', function() {
+                            window.open('/laporan/pdf/' + data.id, '_blank');
+                        });
                         // Show modal
                         $('#modalDetail').modal('show');
                     },

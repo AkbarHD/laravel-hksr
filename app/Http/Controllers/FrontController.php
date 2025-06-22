@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class FrontController extends Controller
 {
@@ -65,7 +67,6 @@ class FrontController extends Controller
                 ->get();
 
             return view('frontend.modul', compact('moduls', 'categories', 'search', 'category'));
-
         } catch (Exception $e) {
             Log::channel('daily')->error('Error saat load halaman modul', [
                 'error_message' => $e->getMessage(),
@@ -96,8 +97,10 @@ class FrontController extends Controller
                 return redirect()->route('modul')->with('error', 'Modul tidak ditemukan.');
             }
 
-            return view('frontend.detail_modul', compact('modul'));
+            // Update jumlah view
+            DB::table('modul')->where('id', $modul->id)->increment('views');
 
+            return view('frontend.detail_modul', compact('modul'));
         } catch (Exception $e) {
             Log::channel('daily')->error('Error saat load detail modul', [
                 'error_message' => $e->getMessage(),
@@ -107,5 +110,22 @@ class FrontController extends Controller
 
             return redirect()->route('modul')->with('error', 'Terjadi kesalahan saat memuat detail modul.');
         }
+    }
+
+    public function downloadModulPdf($id)
+    {
+        $modul = DB::table('modul')
+            ->join('categories', 'modul.category_id', '=', 'categories.id')
+            ->select('modul.*', 'categories.nama_category')
+            ->where('modul.id', $id)
+            ->where('modul.isdelete', '0')
+            ->first();
+
+        if (!$modul) {
+            return redirect()->back()->with('error', 'Modul tidak ditemukan.');
+        }
+
+        $pdf = Pdf::loadView('frontend.pdf.modul', compact('modul'));
+        return $pdf->download(Str::slug($modul->judul) . '.pdf');
     }
 }

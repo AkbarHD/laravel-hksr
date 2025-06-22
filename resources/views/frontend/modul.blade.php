@@ -202,7 +202,13 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $modul->judul }}</h5>
+                                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                                <h5 class="card-title">{{ $modul->judul }}</h5>
+                                                <small class="text-muted d-block mb-2">
+                                                    <i class="fas fa-eye"></i> {{ number_format($modul->views) }}
+                                                </small>
+                                            </div>
+
                                             <p class="card-text">
                                                 {{ Str::limit(strip_tags($modul->isi), 120, '...') }}
                                             </p>

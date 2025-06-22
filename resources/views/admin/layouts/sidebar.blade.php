@@ -74,6 +74,12 @@
                         <span class="align-middle">{{ __('List Konselor') }}</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ request()->routeIs('konselor-dashboard.index') ? 'active' : '' }}">
+                    <a href="{{ route('konselor-dashboard.index') }}" class="sidebar-link">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span class="align-middle">{{ __('List Chat Konselor') }}</span>
+                    </a>
+                </li>
             @endif
 
             <li class="sidebar-item {{ request()->routeIs('home') ? 'active' : '' }}">

@@ -3,59 +3,74 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-class FrontendKonselorController extends Controller
+class KonselorDashboardController extends Controller
 {
     public function index()
     {
-        $currentTime = Carbon::now()->format('H:i:s');
+        $user = Auth::user();
 
-        $konselors = DB::table('konselors')
-            ->join('users', 'konselors.user_id', '=', 'users.id')
-            ->select('konselors.*', 'users.name as user_name')
-            ->where('konselors.is_delete', 0)
-            ->where('konselors.jam_aktif_awal', '<=', $currentTime)
-            ->where('konselors.jam_aktif_akhir', '>=', $currentTime)
-            ->orderBy('konselors.jenis_konselor')
-            ->get();
-
-        return view('frontend.konselor.index', compact('konselors'));
-    }
-
-    public function show($id)
-    {
-        $konselor = DB::table('konselors')
-            ->join('users', 'konselors.user_id', '=', 'users.id')
-            ->select('konselors.*', 'users.name as user_name', 'users.email')
-            ->where('konselors.id', $id)
-            ->where('konselors.is_delete', 0)
-            ->first();
-
-        if (!$konselor) {
-            abort(404);
+        // Pastikan hanya role 4 (konselor)
+        if ($user->role != 4) {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
-        // Check if user already has active session with this konselor
-        $existingSession = DB::table('konsultasi_sessions')
-            ->where('user_id', Auth::id())
-            ->where('konselor_id', $konselor->user_id) // Fix: harus user_id konselor
-            ->where('status', 'active')
+        // Cek apakah user sudah menjadi konselor
+        $konselor = DB::table('konselors')
+            ->where('user_id', $user->id)
+            ->where('is_delete', 0)
             ->first();
 
-        if (!$existingSession) {
-            // Create new session
-            $sessionId = DB::table('konsultasi_sessions')->insertGetId([
-                'user_id' => Auth::id(),
-                'konselor_id' => $konselor->user_id, // Fix: harus user_id konselor
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        } else {
-            $sessionId = $existingSession->id;
+        // Jika belum jadi konselor, tampilkan halaman info
+        if (!$konselor) {
+            return view('admin.chat.not-registered');
+        }
+
+        // Ambil sesi jika sudah jadi konselor
+        $sessions = DB::table('konsultasi_sessions')
+            ->join('users', 'konsultasi_sessions.user_id', '=', 'users.id')
+            ->leftJoin('konsultasi_messages', function ($join) {
+                $join->on('konsultasi_sessions.id', '=', 'konsultasi_messages.session_id')
+                    ->whereRaw('konsultasi_messages.id = (
+                     SELECT MAX(id) FROM konsultasi_messages
+                     WHERE session_id = konsultasi_sessions.id
+                 )');
+            })
+            ->select(
+                'konsultasi_sessions.*',
+                'users.name as user_name',
+                'users.image as user_image',
+                'konsultasi_messages.message as last_message',
+                'konsultasi_messages.sent_at as last_message_time'
+            )
+            ->where('konsultasi_sessions.konselor_id', $user->id)
+            ->where('konsultasi_sessions.status', 'active')
+            ->orderBy('konsultasi_sessions.updated_at', 'desc')
+            ->get();
+
+        return view('admin.chat.index', compact('konselor', 'sessions'));
+    }
+
+
+    public function chat($sessionId)
+    {
+        // Verify konselor owns this session
+        $session = DB::table('konsultasi_sessions')
+            ->join('users', 'konsultasi_sessions.user_id', '=', 'users.id')
+            ->select(
+                'konsultasi_sessions.*',
+                'users.name as user_name',
+                'users.image as user_image'
+            )
+            ->where('konsultasi_sessions.id', $sessionId)
+            ->where('konsultasi_sessions.konselor_id', Auth::id())
+            ->where('konsultasi_sessions.status', 'active')
+            ->first();
+
+        if (!$session) {
+            abort(404, 'Sesi tidak ditemukan');
         }
 
         // Get messages for this session
@@ -66,7 +81,7 @@ class FrontendKonselorController extends Controller
             ->orderBy('konsultasi_messages.sent_at', 'asc')
             ->get();
 
-        return view('frontend.konselor.chat', compact('konselor', 'messages', 'sessionId'));
+        return view('admin.chat.chat', compact('session', 'messages'));
     }
 
     public function sendMessage(Request $request)
@@ -76,10 +91,10 @@ class FrontendKonselorController extends Controller
             'message' => 'required|string|max:1000'
         ]);
 
-        // Verify user owns this session
+        // Verify konselor owns this session
         $session = DB::table('konsultasi_sessions')
             ->where('id', $request->session_id)
-            ->where('user_id', Auth::id())
+            ->where('konselor_id', Auth::id())
             ->where('status', 'active')
             ->first();
 
@@ -97,6 +112,7 @@ class FrontendKonselorController extends Controller
             'updated_at' => now(),
         ]);
 
+        // Update session timestamp
         DB::table('konsultasi_sessions')
             ->where('id', $request->session_id)
             ->update(['updated_at' => now()]);
@@ -116,10 +132,10 @@ class FrontendKonselorController extends Controller
 
     public function getMessages($sessionId)
     {
-        // Verify user owns this session
+        // Verify konselor owns this session
         $session = DB::table('konsultasi_sessions')
             ->where('id', $sessionId)
-            ->where('user_id', Auth::id())
+            ->where('konselor_id', Auth::id())
             ->where('status', 'active')
             ->first();
 
