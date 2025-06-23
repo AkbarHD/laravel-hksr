@@ -71,6 +71,26 @@ class StackholderController extends Controller
                 'updated_at' => now()
             ]);
 
+        // Ambil data jawab_pelapor untuk cari pelapor_id
+        $jawab = DB::table('jawab_pelapor')->where('id', $request->jawab_id)->first();
+
+        if ($jawab) {
+            // Cari user_id dari pelapor terkait
+            $pelapor = DB::table('pelapors')->where('id', $jawab->pelapor_id)->first();
+
+            if ($pelapor) {
+                DB::table('notifications')->insert([
+                    'user_id' => $pelapor->user_id,
+                    'title' => 'Laporan Anda Telah Ditindaklanjuti',
+                    'message' => 'Laporan Anda telah ditindaklanjuti oleh petugas. Silakan cek hasilnya.',
+                    'is_read' => false,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
+
+
         return response()->json(['success' => true]);
     }
 

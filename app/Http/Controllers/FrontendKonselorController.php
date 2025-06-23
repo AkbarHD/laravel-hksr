@@ -97,6 +97,26 @@ class FrontendKonselorController extends Controller
             'updated_at' => now(),
         ]);
 
+        // Cek apakah ini adalah pesan pertama di sesi
+        $jumlahPesanSesi = DB::table('konsultasi_messages')
+            ->where('session_id', $request->session_id)
+            ->count();
+
+        if ($jumlahPesanSesi === 1) {
+            // Ambil ID konselor dari sesi
+            $konselorId = $session->konselor_id;
+
+            // Kirim notifikasi ke konselor
+            DB::table('notifications')->insert([
+                'user_id' => $konselorId,
+                'title' => 'Konsultasi Baru Dimulai',
+                'message' => 'Seorang pengguna memulai sesi konsultasi dengan Anda.',
+                'is_read' => false,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
         DB::table('konsultasi_sessions')
             ->where('id', $request->session_id)
             ->update(['updated_at' => now()]);

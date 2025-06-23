@@ -66,9 +66,22 @@ class PelaporController extends Controller
             // Insert data ke database
             $insertId = DB::table('pelapors')->insertGetId($dataInsert);
 
+            // Kirim notifikasi ke semua admin
+            $admins = DB::table('users')->where('role', 1)->get();
+
+            foreach ($admins as $admin) {
+                DB::table('notifications')->insert([
+                    'user_id' => $admin->id,
+                    'title' => 'Laporan Baru Masuk',
+                    'message' => 'Laporan dari ' . auth()->user()->name . ' dengan judul "' . $request->judul . '" telah dikirim.',
+                    'is_read' => false,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
             // Redirect dengan pesan sukses dan ID pelapor
             return redirect()->back()->with('success', 'Laporan berhasil dibuat.');
-
         } catch (Exception $e) {
             // Log general error
             Log::channel('daily')->error('Error saat menyimpan pelaporan', [

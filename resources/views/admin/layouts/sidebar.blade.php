@@ -67,7 +67,7 @@
                     </a>
                 </li>
             @elseif (Auth::check() && Auth::user()->role === 4)
-                {{-- Sidebar untuk user --}}
+                {{-- Sidebar untuk konselor --}}
                 <li class="sidebar-item {{ request()->routeIs('list.konselor.index') ? 'active' : '' }}">
                     <a href="{{ route('list.konselor.index') }}" class="sidebar-link">
                         <i class="fa-solid fa-file-invoice-dollar"></i>

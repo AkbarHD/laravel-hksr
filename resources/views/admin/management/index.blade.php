@@ -38,8 +38,12 @@
                                             <span class="badge bg-success rounded-pill">Admin</span>
                                         @elseif ($user->role == 2)
                                             <span class="badge bg-warning rounded-pill">Stachholder</span>
-                                        @else
+                                        @elseif($user->role == 3)
                                             <span class="badge bg-danger rounded-pill">User</span>
+                                        @elseif($user->role == 4)
+                                            <span class="badge bg-info rounded-pill">Konselor</span>
+                                        @else
+                                            <span class="badge bg-secondary rounded-pill">Unknown</span>
                                         @endif
                                     </td>
                                     <td>{{ $user->gender ?? '-' }}</td>
@@ -121,6 +125,7 @@
                                 <option value="1">Admin</option>
                                 <option value="2">StackHolder</option>
                                 <option value="3">User</option>
+                                <option value="4">Konselor</option>
                             </select>
                             @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>

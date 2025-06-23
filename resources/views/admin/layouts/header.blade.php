@@ -9,20 +9,27 @@
                 <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                     <div class="position-relative">
                         <i class="align-middle" data-feather="bell"></i>
-                        <span class="indicator allnotitifkasi">0</span>
+                        <span class="indicator allnotitifkasi">0</span> <!-- ✅ jumlah notifikasi -->
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
                     <div class="dropdown-menu-header">
-                        <b class="allnotitifkasi">0</b> Notifikasi Tersedia
+                        <b class="allnotitifkasi">0</b> Notifikasi Tersedia <!-- ✅ header jumlah -->
                     </div>
                     <div class="list-group">
                         <!-- notifikasi ada pada file notifikasi.js -->
                         <div class="notifkasiapprovalorder"></div>
-                        <div class="notifkasiapprovalanggota"></div>
+                        <div class="notifkasi-list"></div>
+
                     </div>
                     <div class="dropdown-menu-footer">
                         {{-- <a href="#" class="text-muted">Show all notifications</a> --}}
+                        <!-- 👇 TAMBAHKAN BUTTON INI DI SINI -->
+                        <div class="dropdown-menu-footer">
+                            <button type="button" class="btn btn-sm btn-primary w-100" onclick="markAllAsRead()">
+                                Tandai Semua Dibaca
+                            </button>
+                        </div>
                     </div>
                 </div>
             </li>
@@ -38,8 +45,8 @@
                         <img src="{{ asset('no_images.jpg') }}" class="avatar img-fluid rounded me-1"
                             alt="{{ auth()->user()->name }}" />
                     @else
-                        <img src="{{ asset(auth()->user()->image) }}"
-                            class="avatar img-fluid rounded me-1" alt="{{ auth()->user()->name }}" />
+                        <img src="{{ asset(auth()->user()->image) }}" class="avatar img-fluid rounded me-1"
+                            alt="{{ auth()->user()->name }}" />
                     @endif
 
                     <span class="text-dark">

@@ -93,6 +93,33 @@ class ListLaporanController extends Controller
             'updated_at' => now()
         ]);
 
+        // Ambil data pelapor untuk tahu user_id
+        $pelapor = DB::table('pelapors')->where('id', $id)->first();
+
+        // Notifikasi ke user
+        DB::table('notifications')->insert([
+            'user_id' => $pelapor->user_id,
+            'title' => 'Laporan Anda Diverifikasi',
+            'message' => 'Laporan Anda telah diverifikasi. Silakan tunggu tindak lanjut dari stackholder.',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // Notifikasi ke semua staff (role = 2)
+        $staffs = DB::table('users')->where('role', 2)->get();
+        foreach ($staffs as $staff) {
+            DB::table('notifications')->insert([
+                'user_id' => $staff->id,
+                'title' => 'Laporan Baru untuk Ditindaklanjuti',
+                'message' => 'Ada laporan yang telah diverifikasi dan perlu ditindaklanjuti.',
+                'is_read' => false,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+
         return redirect()->back()->with('success', 'Laporan berhasil diverifikasi.');
     }
 
@@ -107,6 +134,20 @@ class ListLaporanController extends Controller
             'catatan' => $request->catatan,
             'updated_at' => now()
         ]);
+
+        // Ambil data pelapor untuk tahu user_id
+        $pelapor = DB::table('pelapors')->where('id', $id)->first();
+
+        // Notifikasi ke user
+        DB::table('notifications')->insert([
+            'user_id' => $pelapor->user_id,
+            'title' => 'Laporan Anda Ditolak',
+            'message' => 'Laporan Anda ditolak. Catatan: ' . $request->catatan,
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
 
         return redirect()->back()->with('success', 'Laporan ditolak.');
     }

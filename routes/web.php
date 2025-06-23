@@ -10,6 +10,7 @@ use App\Http\Controllers\ListLaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagementUserController;
 use App\Http\Controllers\ModulController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PelaporController;
 use App\Http\Controllers\StackholderController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
     Route::put('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
+
+    // get notifikasi
+    Route::get('/notifikasi', [NotificationController::class, 'getNotifikasi'])->name('get.notifikasi');
+    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAsRead'])->name('notifikasi.readall');
+
 
     Route::prefix('category')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('category.index');
@@ -79,7 +85,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/delete/{id}', [KonselorController::class, 'destroy'])->name('list.konselor.destroy');
     });
 
-    // konselo
+    // konselor
     Route::prefix('konselor')->group(function () {
         Route::get('/', [FrontendKonselorController::class, 'index'])->name('konselor.index');
         Route::get('/detail/{id}', [FrontendKonselorController::class, 'show'])->name('konselor.detail');
@@ -117,7 +123,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/stackholder/laporan/detail/{id}', [StackholderController::class, 'getLaporanById']);
     Route::get('/user/hasil-tindaklanjut', [StackholderController::class, 'hasilTindakLanjut'])->name('user.hasil.tindaklanjut');
     Route::get('/stackholder/laporan/pdf/{id}', [StackholderController::class, 'downloadPDF']);
-
 });
 
 
