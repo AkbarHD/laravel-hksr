@@ -11,7 +11,7 @@
 </head>
 <body>
     <h1>{{ $modul->judul }}</h1>
-    <div class="category"><strong>Kategori:</strong> {{ $modul->nama_category }}</div>
+    {{-- <div class="category"><strong>Kategori:</strong> {{ $modul->nama_category }}</div> --}}
     <p><strong>Dipublikasi:</strong> {{ \Carbon\Carbon::parse($modul->created_at)->format('d F Y') }}</p>
     <hr>
     <div>{!! $modul->isi !!}</div>

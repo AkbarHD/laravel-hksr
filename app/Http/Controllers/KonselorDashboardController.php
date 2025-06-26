@@ -54,6 +54,7 @@ class KonselorDashboardController extends Controller
     }
 
 
+    // untuk konselor melihat detail sesi chat
     public function chat($sessionId)
     {
         // Verify konselor owns this session
@@ -84,6 +85,7 @@ class KonselorDashboardController extends Controller
         return view('admin.chat.chat', compact('session', 'messages'));
     }
 
+    // untuk konselor mengirim pesan ke user
     public function sendMessage(Request $request)
     {
         $request->validate([
@@ -130,6 +132,7 @@ class KonselorDashboardController extends Controller
         ]);
     }
 
+    // untuk mendapatkan pesan konselor
     public function getMessages($sessionId)
     {
         // Verify konselor owns this session

@@ -156,6 +156,7 @@ class ListLaporanController extends Controller
     {
         $laporan = DB::table('pelapors')
             ->join('categories', 'pelapors.category_id', '=', 'categories.id')
+            // kenapa left join jawab_pelapor? karena tidak semua laporan punya tindak lanjut (bisa kosong)
             ->leftJoin('jawab_pelapor', 'pelapors.id', '=', 'jawab_pelapor.pelapor_id')
             ->select(
                 'pelapors.*',

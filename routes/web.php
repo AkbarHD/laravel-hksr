@@ -16,40 +16,27 @@ use App\Http\Controllers\StackholderController;
 use Illuminate\Support\Facades\Route;
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/', [FrontController::class, 'index'])->name('home');
-Route::get('/modul', [FrontController::class, 'modul'])->name('modul');
-Route::get('/modul/{slug}', [FrontController::class, 'detailModul'])->name('modul.detail');
-Route::get('/modul/download/{id}', [FrontController::class, 'downloadModulPdf'])->name('modul.download.pdf');
+Route::get('/', [FrontController::class, 'index'])->name('home'); // halaman depan
+Route::get('/modul', [FrontController::class, 'modul'])->name('modul'); // halaman modul
+Route::get('/modul/{slug}', [FrontController::class, 'detailModul'])->name('modul.detail'); // detail modul
+Route::get('/modul/download/{id}', [FrontController::class, 'downloadModulPdf'])->name('modul.download.pdf'); // untuk mengunduh modul dalam format PDF
 
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/admin/homeadmin', [HomeController::class, 'homeadmin'])->name('homeadmin'); // halaman admin
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // untuk logout
 
-    Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
-    Route::put('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile', [HomeController::class, 'profile'])->name('profile'); // halaman profile
+    Route::put('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update'); // untuk update profile
 
-    // get notifikasi
+    // get notifikasi per role
     Route::get('/notifikasi', [NotificationController::class, 'getNotifikasi'])->name('get.notifikasi');
+    // untuk menandai notifikasi sebagai sudah dibaca
     Route::post('/notifikasi/read-all', [NotificationController::class, 'markAsRead'])->name('notifikasi.readall');
 
-
+    // modul untuk admin crud
     Route::prefix('category')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('category.index');
         Route::post('/store', [CategoryController::class, 'store'])->name('category.store');
@@ -57,6 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/update/{id}', [CategoryController::class, 'update'])->name('category.update');
         Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
     });
+
+    // modul for admin crud
     Route::prefix('materi')->group(function () {
         Route::get('/', [ModulController::class, 'index'])->name('materi.index');
         Route::post('/store', [ModulController::class, 'store'])->name('materi.store');
@@ -74,49 +63,51 @@ Route::middleware('auth')->group(function () {
         Route::delete('/delete/{id}', [PelaporController::class, 'destroy'])->name('pelaporan.destroy');
     });
 
-    // data master konselor
+    // data master konselor untuk crud dibagian dashboard
     Route::prefix('list-konselor')->group(function () {
-        Route::get('/', [KonselorController::class, 'index'])->name('list.konselor.index');
-        Route::get('/create', [KonselorController::class, 'create'])->name('list.konselor.create');
-        Route::post('/update/{id}', [KonselorController::class, 'update'])->name('list.konselor.update');
-        Route::get('/edit/{id}', [KonselorController::class, 'edit'])->name('list.konselor.edit');
-        Route::get('/detail/{id}', [KonselorController::class, 'detail'])->name('list.konselor.detail');
-        Route::post('/store', [KonselorController::class, 'store'])->name('list.konselor.store');
-        Route::delete('/delete/{id}', [KonselorController::class, 'destroy'])->name('list.konselor.destroy');
+        Route::get('/', [KonselorController::class, 'index'])->name('list.konselor.index'); // halaman daftar konselor
+        Route::get('/create', [KonselorController::class, 'create'])->name('list.konselor.create'); // halaman tambah konselor
+        Route::post('/update/{id}', [KonselorController::class, 'update'])->name('list.konselor.update'); // untuk update konselor
+        Route::get('/edit/{id}', [KonselorController::class, 'edit'])->name('list.konselor.edit'); // untuk edit konselor
+        Route::get('/detail/{id}', [KonselorController::class, 'detail'])->name('list.konselor.detail'); // untuk detail konselor
+        Route::post('/store', [KonselorController::class, 'store'])->name('list.konselor.store'); // untuk menyimpan konselor baru
+        Route::delete('/delete/{id}', [KonselorController::class, 'destroy'])->name('list.konselor.destroy'); // untuk menghapus konselor
     });
 
-    // konselor
+    // untuk user buat chat dengan konselor di bagian halaman depan
     Route::prefix('konselor')->group(function () {
-        Route::get('/', [FrontendKonselorController::class, 'index'])->name('konselor.index');
-        Route::get('/detail/{id}', [FrontendKonselorController::class, 'show'])->name('konselor.detail');
-        Route::post('/send-message', [FrontendKonselorController::class, 'sendMessage'])->name('konselor.send-message');
-        Route::get('messages/{id}', [FrontendKonselorController::class, 'getMessage'])->name('konselor.message');
+        Route::get('/', [FrontendKonselorController::class, 'index'])->name('konselor.index'); // halaman daftar konselor
+        Route::get('/detail/{id}', [FrontendKonselorController::class, 'show'])->name('konselor.detail'); // detail konselor
+        Route::post('/send-message', [FrontendKonselorController::class, 'sendMessage'])->name('konselor.send-message'); // untuk user mengirim pesan ke konselor
+        Route::get('messages/{id}', [FrontendKonselorController::class, 'getMessage'])->name('konselor.message'); // untuk mendapatkan pesan konselor
     });
 
-    // web.php - tambahkan route group untuk konselor dashboard
+    // untuk konselor membalas chat user di bagian dashboard
     Route::prefix('konselor-dashboard')->group(function () {
-        Route::get('/', [KonselorDashboardController::class, 'index'])->name('konselor-dashboard.index');
-        Route::get('/chat/{sessionId}', [KonselorDashboardController::class, 'chat'])->name('konselor-dashboard.chat');
-        Route::post('/send-message', [KonselorDashboardController::class, 'sendMessage'])->name('konselor-dashboard.send-message');
-        Route::get('/messages/{sessionId}', [KonselorDashboardController::class, 'getMessages'])->name('konselor-dashboard.messages');
+        Route::get('/', [KonselorDashboardController::class, 'index'])->name('konselor-dashboard.index'); // halaman utama dashboard konselor
+        Route::get('/chat/{sessionId}', [KonselorDashboardController::class, 'chat'])->name('konselor-dashboard.chat'); // halaman chat konselor dengan user
+        Route::post('/send-message', [KonselorDashboardController::class, 'sendMessage'])->name('konselor-dashboard.send-message'); // untuk konselor mengirim pesan ke user
+        Route::get('/messages/{sessionId}', [KonselorDashboardController::class, 'getMessages'])->name('konselor-dashboard.messages'); // untuk mendapatkan pesan konselor
     });
 
+    // list laporan milik user
     Route::get('/list-pelaporan', [ListLaporanController::class, 'index'])->name('list.laporan.index');
     Route::get('/detail-pelapor/{id}', [ListLaporanController::class, 'show'])->name('list.laporan.detail');
     Route::delete('/delete-pelapor/{id}', [ListLaporanController::class, 'destroy'])->name('list.laporan.destroy');
-    // admin
-    Route::get('/admin/laporan-pending', [ListLaporanController::class, 'pendingLaporan'])->name('admin.laporan.pending');
-    Route::post('/laporan/{id}/verifikasi', [ListLaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
-    Route::post('/laporan/{id}/tolak', [ListLaporanController::class, 'tolak'])->name('laporan.tolak');
-    Route::get('/laporan/ajax/detail/{id}', [ListLaporanController::class, 'getDetail'])->name('laporan.ajax.detail');
-    Route::get('/laporan/pdf/{id}', [ListLaporanController::class, 'downloadPdf']);
 
+    // untuk admin mengelola laporan yang pending
+    Route::get('/admin/laporan-pending', [ListLaporanController::class, 'pendingLaporan'])->name('admin.laporan.pending'); // halaman laporan pending
+    Route::post('/laporan/{id}/verifikasi', [ListLaporanController::class, 'verifikasi'])->name('laporan.verifikasi'); // untuk admin memverifikasi laporan
+    Route::post('/laporan/{id}/tolak', [ListLaporanController::class, 'tolak'])->name('laporan.tolak'); // untuk admin menolak laporan
+    Route::get('/laporan/ajax/detail/{id}', [ListLaporanController::class, 'getDetail'])->name('laporan.ajax.detail'); // untuk mendapatkan detail laporan via ajax
+    Route::get('/laporan/pdf/{id}', [ListLaporanController::class, 'downloadPdf']); // untuk mengunduh laporan dalam format PDF
 
+    // untuk admin mengelola user
     Route::get('/admin/managament-user', [ManagementUserController::class, 'index'])->name('admin.managament.index');
     Route::post('/admin/managament-user/store', [ManagementUserController::class, 'store'])->name('admin.managament.store');
     Route::delete('/admin/managament-user/delete/{id}', [ManagementUserController::class, 'destroy'])->name('admin.managament.destroy');
 
-    // stackholder
+    // stackholder untuk menindaklanjuti laporan
     Route::get('/stackholder/laporan-pending', [StackholderController::class, 'laporanPending'])->name('stackholder.laporan.pending');
     Route::get('/stackholder/laporan/{id}', [StackholderController::class, 'getLaporan']);
     Route::post('/stackholder/tindaklanjut/simpan', [StackholderController::class, 'simpanTindakLanjut']);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,8 @@
             --light-color: #f1faee;
             --medium-color: #a8dadc;
             --dark-color: #457b9d;
+            --warning-color: #f39c12;
+            --warning-light: #fef9e7;
         }
 
         .konselor-section {
@@ -23,7 +26,7 @@
 
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         .section-title h2 {
@@ -36,14 +39,52 @@
         .section-title p {
             color: var(--dark-color);
             font-size: 1.1rem;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Warning Section Styles */
+        .warning-section {
+            margin-bottom: 40px;
+        }
+
+        .warning-card {
+            background: var(--warning-light);
+            border: 1px solid var(--warning-color);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.1);
+        }
+
+        .warning-card i {
+            font-size: 2rem;
+            color: var(--warning-color);
+            margin-right: 20px;
+        }
+
+        .warning-content h5 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .warning-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         .konselor-card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             overflow: hidden;
             height: 100%;
@@ -52,7 +93,7 @@
 
         .konselor-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border-color: var(--primary-color);
         }
 
@@ -138,7 +179,7 @@
             padding: 60px 20px;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .no-konselor i {
@@ -162,6 +203,11 @@
                 font-size: 2rem;
             }
 
+            .section-title p {
+                font-size: 1rem;
+                padding: 0 15px;
+            }
+
             .konselor-section {
                 padding: 40px 0;
             }
@@ -169,9 +215,25 @@
             .konselor-body {
                 padding: 20px;
             }
+
+            .warning-card {
+                flex-direction: column;
+                text-align: center;
+                margin: 0 15px;
+            }
+
+            .warning-card i {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .warning-content h5 {
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
+
 <body>
     @include('frontend.layouts.navbar')
 
@@ -179,21 +241,32 @@
         <div class="container">
             <div class="section-title">
                 <h2>Konselor Tersedia</h2>
-                <p>Pilih konselor yang tepat untuk mendampingi perjalanan pemulihan Anda. Konselor kami siap membantu dengan profesional dan empati.</p>
+
             </div>
 
-            @if($konselors->count() > 0)
+            <!-- Warning Section -->
+            <div class="warning-section">
+                <div class="warning-card">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="warning-content">
+                        <h5>Informasi Penting</h5>
+                        <p>Konselor hanya muncul sesuai dengan jam aktif mereka. Jika konselor yang Anda cari tidak
+                            muncul, kemungkinan konselor tersebut sedang tidak aktif saat ini.</p>
+                    </div>
+                </div>
+            </div>
+
+            @if ($konselors->count() > 0)
                 <div class="row">
-                    @foreach($konselors as $konselor)
+                    @foreach ($konselors as $konselor)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="konselor-card">
-                                @if($konselor->gambar_konselor)
-                                    <img src="{{ asset($konselor->gambar_konselor) }}"
-                                         alt="{{ $konselor->user_name }}"
-                                         class="konselor-image">
+                                @if ($konselor->gambar_konselor)
+                                    <img src="{{ asset($konselor->gambar_konselor) }}" alt="{{ $konselor->user_name }}"
+                                        class="konselor-image">
                                 @else
                                     <div class="konselor-image d-flex align-items-center justify-content-center"
-                                         style="background: var(--medium-color);">
+                                        style="background: var(--medium-color);">
                                         <i class="fas fa-user-tie fa-4x text-white"></i>
                                     </div>
                                 @endif
@@ -205,11 +278,11 @@
 
                                     <div class="konselor-time">
                                         <i class="fas fa-clock"></i>
-                                        <span>Aktif: {{ date('H:i', strtotime($konselor->jam_aktif_awal)) }} - {{ date('H:i', strtotime($konselor->jam_aktif_akhir)) }}</span>
+                                        <span>Aktif: {{ date('H:i', strtotime($konselor->jam_aktif_awal)) }} -
+                                            {{ date('H:i', strtotime($konselor->jam_aktif_akhir)) }}</span>
                                     </div>
 
-                                    <a href="{{ route('konselor.detail', $konselor->id) }}"
-                                       class="btn-konsultasi">
+                                    <a href="{{ route('konselor.detail', $konselor->id) }}" class="btn-konsultasi">
                                         <i class="fas fa-comments me-2"></i>Mulai Konsultasi
                                     </a>
                                 </div>
@@ -223,7 +296,8 @@
                         <div class="no-konselor">
                             <i class="fas fa-clock"></i>
                             <h3>Tidak Ada Konselor Aktif</h3>
-                            <p>Saat ini tidak ada konselor yang sedang aktif. Silakan kembali lagi nanti atau hubungi admin untuk informasi lebih lanjut.</p>
+                            <p>Saat ini tidak ada konselor yang sedang aktif. Silakan kembali lagi nanti atau hubungi
+                                admin untuk informasi lebih lanjut.</p>
                         </div>
                     </div>
                 </div>
@@ -234,4 +308,5 @@
     @include('frontend.layouts.footer')
     @include('frontend.layouts.script')
 </body>
+
 </html>

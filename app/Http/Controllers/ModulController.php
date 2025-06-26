@@ -12,13 +12,10 @@ class ModulController extends Controller
     public function index()
     {
         $moduls = DB::table('modul')
-            ->join('categories', 'modul.category_id', '=', 'categories.id')
-            ->select('modul.*', 'categories.nama_category')
-            ->where('modul.isdelete', 0)
-            ->where('categories.isdelete', 0)
+            ->select('modul.*')
+            ->where('isdelete', 0)
             ->get();
-        $categories = DB::table('categories')->where('isdelete', 0)->get();
-        return view('admin.modul.index', compact('moduls', 'categories'));
+        return view('admin.modul.index', compact('moduls'));
     }
 
     public function store(Request $request)
@@ -28,7 +25,7 @@ class ModulController extends Controller
             // Validasi data
             $request->validate([
                 'judul' => 'required|string|max:255',
-                'category_id' => 'required|integer|exists:categories,id',
+                'category_id' => 'nullable|integer|exists:categories,id',
                 'gambar' => 'required|mimes:jpeg,png,jpg|max:2048',
                 'isi' => 'required|string',
             ]);
@@ -79,9 +76,9 @@ class ModulController extends Controller
             return response()->json(['error' => 'Data Modul tidak ditemukan'], 404);
         }
 
-        $categories = DB::table('categories')->where('isdelete', 0)->get(); // penting
+        // $categories = DB::table('categories')->where('isdelete', 0)->get();
 
-        return view('admin.modul.edit', compact('modul', 'categories'));
+        return view('admin.modul.edit', compact('modul'));
     }
 
 
@@ -92,7 +89,7 @@ class ModulController extends Controller
         try {
             $request->validate([
                 'judul' => 'required|string|max:255',
-                'category_id' => 'required|integer|exists:categories,id',
+                'category_id' => 'nullable|integer|exists:categories,id',
                 'isi' => 'required|string',
                 'gambar' => 'nullable|mimes:jpeg,png,jpg|max:2048',
             ]);
@@ -144,10 +141,9 @@ class ModulController extends Controller
     public function detail(Request $request)
     {
         $modul = DB::table('modul')
-            ->join('categories', 'modul.category_id', '=', 'categories.id')
-            ->select('modul.*', 'categories.nama_category')
-            ->where('modul.id', $request->id)
-            ->where('modul.isdelete', 0)
+            ->select('modul.*')
+            ->where('id', $request->id)
+            ->where('isdelete', 0)
             ->first();
 
         if (!$modul) {

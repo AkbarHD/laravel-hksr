@@ -3,10 +3,10 @@
         <strong>Judul:</strong><br>
         {{ $modul->judul }}
     </div>
-    <div class="col-md-6">
+    {{-- <div class="col-md-6">
         <strong>Kategori:</strong><br>
         {{ $modul->nama_category }}
-    </div>
+    </div> --}}
     <div class="col-md-12 mt-3">
         <strong>Isi:</strong><br>
         {!! $modul->isi !!}

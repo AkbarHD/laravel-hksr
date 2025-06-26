@@ -197,14 +197,15 @@
                                                 <img src="{{ asset('assets/images/frontend/default-modul.jpg') }}"
                                                     class="card-img-top" alt="Default Image">
                                             @endif
-                                            <div class="position-absolute top-0 start-0 p-3">
+                                            {{-- <div class="position-absolute top-0 start-0 p-3">
                                                 <span class="category-badge">{{ $modul->nama_category }}</span>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between mb-3">
                                                 <h5 class="card-title">{{ $modul->judul }}</h5>
-                                                <small class="text-muted d-block mb-2">
+                                                {{-- untuk menampilkan jumlah views --}}
+                                                <small class="text-muted d-block mb-2">`
                                                     <i class="fas fa-eye"></i> {{ number_format($modul->views) }}
                                                 </small>
                                             </div>

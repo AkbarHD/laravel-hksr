@@ -28,6 +28,7 @@ class NotificationController extends Controller
 
         $html = '';
 
+        // Buat HTML untuk daftar notifikasi
         foreach ($notifications as $notif) {
             $createdAt = Carbon::parse($notif->created_at)->diffForHumans();
             $html .= '
@@ -48,12 +49,15 @@ class NotificationController extends Controller
         ]);
     }
 
+    /**
+     * Tandai semua notifikasi sebagai sudah dibaca.
+     */
     public function markAsRead()
     {
         $updated = DB::table('notifications')
             ->where('user_id', Auth::id())
             ->where('is_read', 0) // atau false
-            ->update(['is_read' => 1]); // atau true
+            ->update(['is_read' => 1]); // 1 itu berarti sudah dibaca
 
         return response()->json([
             'success' => true,

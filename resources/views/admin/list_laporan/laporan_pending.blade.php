@@ -16,7 +16,7 @@
                         <i class="fas fa-clock fa-2x"></i>
                     </div>
                     <div>
-                        <h3 class="mb-1">List Laporan Pending</h3>
+                        <h3 class="mb-1">List Laporan Pending -> Laporan Verifikasi -> Laporan Di tolak</h3>
                         <p class="mb-0 opacity-75">
                             <i class="fas fa-info-circle me-2"></i>
                             Kelola laporan yang menunggu verifikasi
@@ -82,12 +82,14 @@
                             </div>
 
                             <div class="d-flex action-buttons">
+                                {{-- jika laporan status 2 atau 1 maka cuman tampilkan button detail --}}
                                 @if ($laporan->status == 2 || $laporan->status == 1)
                                     <button class="btn btn-action btn-secondary-custom btn-detail"
                                         data-id="{{ $laporan->id }}" data-bs-toggle="modal" data-bs-target="#modalDetail">
                                         <i class="fas fa-eye me-2"></i>Detail
                                     </button>
                                 @else
+                                {{-- jika laporan status 0 maka tampilkan button verifikasi dan tolak dan detail --}}
                                     <button class="btn btn-action btn-success-custom btn-verifikasi"
                                         data-id="{{ $laporan->id }}">
                                         <i class="fas fa-check me-2"></i>Verifikasi
@@ -299,7 +301,7 @@
                                 <div class="detail-value" id="detail-nohp">08123456789</div>
                             </div>
 
-                            <!-- Catatan -->
+                            <!-- Catatan buat lihat perkambangan jawaban oleh stackholder -->
                             <div class="detail-item right animate-right" style="animation-delay: 1.0s;">
                                 <div class="detail-label">
                                     <div class="detail-icon icon-notes">
@@ -310,6 +312,7 @@
                                 <div class="detail-value" id="detail-catatan">-</div>
                             </div>
 
+                            {{-- Catatan Tindak Lanjut buat lihat perkambangan jawaban oleh stackholder --}}
                             <div class="detail-item right animate-right" style="animation-delay: 1.0s;">
                                 <div class="detail-label">
                                     <div class="detail-icon icon-notes">
@@ -326,7 +329,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-outline-primary" id="btn-download-pdf">
+                    <button type="button" class="btn btn-outline-danger" id="btn-download-pdf">
                         <i class="fas fa-file-pdf me-1"></i> Download PDF
                     </button>
                 </div>
@@ -343,14 +346,18 @@
             // Tombol Verifikasi
             $('.btn-verifikasi').on('click', function() {
                 let id = $(this).data('id');
+                // Set action untuk form verifikasi
                 $('#formVerifikasi').attr('action', `/laporan/${id}/verifikasi`);
+                // Tampilkan modal verifikasi
                 $('#verifikasiModal').modal('show');
             });
 
             // Tombol Tolak
             $('.btn-tolak').on('click', function() {
                 let id = $(this).data('id');
+                // Set action untuk form tolak
                 $('#formTolak').attr('action', `/laporan/${id}/tolak`);
+                // Tampilkan modal tolak
                 $('#tolakModal').modal('show');
             });
 
@@ -395,10 +402,13 @@
                         $('#detail-nohp').text(data.no_hp);
                         $('#detail-email').text(data.email);
                         $('#detail-catatan').text(data.catatan || '-');
+                        // Tindak Lanjut buat lihat perkambangan jawaban oleh stackholder
                         $('#detail-tindaklanjut').text(data.tindak_lanjut || '-');
+                        // Catatan Tindak Lanjut buat lihat perkambangan jawaban oleh stackholder
                         $('#detail-catatanTindakLanjut').text(data.catatan_tindak_lanjut ||
                             '-');
 
+                        // Set action untuk download PDF
                         $('#btn-download-pdf').off('click').on('click', function() {
                             window.open('/laporan/pdf/' + data.id, '_blank');
                         });

@@ -20,7 +20,6 @@
                             <tr>
                                 <th>No</th>
                                 <th>Judul</th>
-                                <th>Category</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -29,7 +28,6 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $modul->judul ?? '-' }}</td>
-                                    <td>{{ $modul->nama_category ?? '-' }}</td>
                                     <td>
 
                                         <div class="btn-group">
@@ -84,7 +82,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label class="form-label">Category</label>
                             <select name="category_id" id="category_id" class="form-control">
                                 <option value="" hidden>Pilih Category</option>
@@ -95,7 +93,7 @@
                             @error('category_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="mb-3">
                             <label class="form-label">Gambar</label>

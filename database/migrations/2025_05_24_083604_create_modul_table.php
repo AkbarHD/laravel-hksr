@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('gambar');
             $table->string('judul');
             $table->string('slug');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->text('isi');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('views')->default(0);

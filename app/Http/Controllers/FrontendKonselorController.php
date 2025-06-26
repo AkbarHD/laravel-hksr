@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class FrontendKonselorController extends Controller
 {
+    // Menampilkan daftar konselor yang aktif berdasarkan jam aktif
     public function index()
     {
         $currentTime = Carbon::now()->format('H:i:s');
@@ -25,6 +26,7 @@ class FrontendKonselorController extends Controller
         return view('frontend.konselor.index', compact('konselors'));
     }
 
+    // Menampilkan detail konselor dan memulai sesi chat
     public function show($id)
     {
         $konselor = DB::table('konselors')
@@ -69,6 +71,9 @@ class FrontendKonselorController extends Controller
         return view('frontend.konselor.chat', compact('konselor', 'messages', 'sessionId'));
     }
 
+    // Mengirim pesan ke konselor
+    // Pastikan user sudah memiliki sesi aktif dengan konselor
+    // Jika belum, buat sesi baru
     public function sendMessage(Request $request)
     {
         $request->validate([
@@ -134,6 +139,9 @@ class FrontendKonselorController extends Controller
         ]);
     }
 
+    // Mendapatkan pesan dari sesi konsultasi
+    // Pastikan user memiliki sesi aktif dengan konselor
+    // Jika tidak, kembalikan error 404
     public function getMessages($sessionId)
     {
         // Verify user owns this session

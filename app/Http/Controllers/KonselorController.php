@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class KonselorController extends Controller
 {
+    // menampilkan daftar konselor aktif
     public function index()
     {
         $userId = auth()->id(); // Ambil ID user yang sedang login
@@ -24,6 +25,7 @@ class KonselorController extends Controller
     }
 
 
+    // membuat konselor baru
     public function create()
     {
         // Ambil users dengan role konselor (4)
@@ -37,6 +39,7 @@ class KonselorController extends Controller
         return view('admin.konselor.create', compact('users'));
     }
 
+    // menyimpan konselor baru
     public function store(Request $request)
     {
         $request->validate([
@@ -71,6 +74,7 @@ class KonselorController extends Controller
         return redirect()->route('list.konselor.index')->with('success', 'Konselor berhasil ditambahkan!');
     }
 
+    // detail konselor
     public function show($id)
     {
         $konselor = DB::table('konselors')
@@ -87,6 +91,7 @@ class KonselorController extends Controller
         return view('admin.konselor.show', compact('konselor'));
     }
 
+    // edit konselor
     public function edit($id)
     {
         $konselor = DB::table('konselors')->where('id', $id)->where('is_delete', 0)->first();
@@ -107,6 +112,7 @@ class KonselorController extends Controller
         return view('admin.konselor.edit', compact('konselor', 'users'));
     }
 
+    // update konselor
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -151,6 +157,7 @@ class KonselorController extends Controller
         return redirect()->route('list.konselor.index')->with('success', 'Konselor berhasil diupdate!');
     }
 
+    // delete konselor (soft delete)
     public function destroy($id)
     {
         $konselor = DB::table('konselors')->where('id', $id)->where('is_delete', 0)->first();

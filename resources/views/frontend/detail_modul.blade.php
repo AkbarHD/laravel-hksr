@@ -213,7 +213,7 @@
 
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <span class="category-badge">{{ $modul->nama_category }}</span>
+                        {{-- <span class="category-badge">{{ $modul->nama_category }}</span> --}}
                         <h1 class="modul-title text-white">{{ $modul->judul }}</h1>
                         <div class="modul-meta text-white-50">
                             <i class="bi bi-calendar-event me-2"></i>
@@ -243,12 +243,13 @@
 
                     <!-- Info Views dan Tombol Download -->
                     <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
+                        {{-- Jumlah views modul --}}
                         <small class="text-muted">
                             <i class="fas fa-eye me-1"></i> {{ number_format($modul->views) }} kali dilihat
                         </small>
 
-                        <a href="{{ route('modul.download.pdf', $modul->id) }}" class="btn btn-success btn-sm"
-                            target="_blank">
+                        {{-- Tombol Download modul --}}
+                        <a href="{{ route('modul.download.pdf', $modul->id) }}" class="btn btn-success btn-sm">
                             <i class="fas fa-download me-1"></i> Unduh Modul
                         </a>
 

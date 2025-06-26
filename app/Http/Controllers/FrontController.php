@@ -33,40 +33,26 @@ class FrontController extends Controller
     {
         try {
             $search = $request->get('search');
-            $category = $request->get('category');
 
             $query = DB::table('modul')
-                ->join('categories', 'modul.category_id', '=', 'categories.id')
+
                 ->select(
                     'modul.*',
-                    'categories.nama_category'
                 )
-                ->where('modul.isdelete', '0')
-                ->where('categories.isdelete', '0');
+                ->where('isdelete', '0');
 
             // Filter berdasarkan pencarian
             if ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('modul.judul', 'LIKE', "%{$search}%")
-                        ->orWhere('modul.isi', 'LIKE', "%{$search}%")
-                        ->orWhere('categories.nama_category', 'LIKE', "%{$search}%");
+                    $q->where('judul', 'LIKE', "%{$search}%")
+                        ->orWhere('isi', 'LIKE', "%{$search}%");
                 });
             }
 
-            // Filter berdasarkan kategori
-            if ($category) {
-                $query->where('modul.category_id', $category);
-            }
 
-            $moduls = $query->orderBy('modul.created_at', 'desc')->paginate(9);
+            $moduls = $query->orderBy('created_at', 'desc')->paginate(9);
 
-            // Get categories untuk filter
-            $categories = DB::table('categories')
-                ->where('isdelete', '0')
-                ->orderBy('nama_category')
-                ->get();
-
-            return view('frontend.modul', compact('moduls', 'categories', 'search', 'category'));
+            return view('frontend.modul', compact('moduls', 'search'));
         } catch (Exception $e) {
             Log::channel('daily')->error('Error saat load halaman modul', [
                 'error_message' => $e->getMessage(),
@@ -83,21 +69,18 @@ class FrontController extends Controller
     {
         try {
             $modul = DB::table('modul')
-                ->join('categories', 'modul.category_id', '=', 'categories.id')
                 ->select(
                     'modul.*',
-                    'categories.nama_category'
                 )
-                ->where('modul.slug', $slug)
-                ->where('modul.isdelete', '0')
-                ->where('categories.isdelete', '0')
+                ->where('slug', $slug)
+                ->where('isdelete', '0')
                 ->first();
 
             if (!$modul) {
                 return redirect()->route('modul')->with('error', 'Modul tidak ditemukan.');
             }
 
-            // Update jumlah view
+            // jika dia masuk ke halaman detail modul, maka viewsnya akan bertambah 1
             DB::table('modul')->where('id', $modul->id)->increment('views');
 
             return view('frontend.detail_modul', compact('modul'));
@@ -112,13 +95,13 @@ class FrontController extends Controller
         }
     }
 
+    // untuk mengunduh modul dalam format PDF
     public function downloadModulPdf($id)
     {
         $modul = DB::table('modul')
-            ->join('categories', 'modul.category_id', '=', 'categories.id')
-            ->select('modul.*', 'categories.nama_category')
-            ->where('modul.id', $id)
-            ->where('modul.isdelete', '0')
+            ->select('modul.*')
+            ->where('id', $id)
+            ->where('isdelete', '0')
             ->first();
 
         if (!$modul) {

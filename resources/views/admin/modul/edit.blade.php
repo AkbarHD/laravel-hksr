@@ -10,7 +10,7 @@
         @enderror
     </div>
 
-    <div class="mb-3">
+    {{-- <div class="mb-3">
         <label class="form-label">Category</label>
         <select name="category_id" class="form-control @error('category_id') is-invalid @enderror">
             <option value="">Pilih Category</option>
@@ -23,7 +23,7 @@
         @error('category_id')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
-    </div>
+    </div> --}}
 
     <div class="mb-3">
         <label class="form-label">Gambar</label>
